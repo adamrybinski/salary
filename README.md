@@ -9,7 +9,7 @@ A simple, client-side salary calculator that converts salaries between currencie
 If GitHub Pages is enabled for this repository, the calculator is available at:
 
 ```
-https://<username>.github.io/salary/
+https://adamrybinski.github.io/salary/
 ```
 
 ## Features
@@ -36,17 +36,6 @@ No build tools required. Simply open `index.html` in a browser, or serve the fol
 ```bash
 npx serve .
 ```
-
-## GitHub Pages Setup
-
-To publish this calculator as a GitHub Page:
-
-1. Go to **Settings → Pages** in the repository
-2. Under **Source**, select **Deploy from a branch**
-3. Choose the branch (e.g. `main`) and `/root` (or `/docs` if configured)
-4. Click **Save**
-
-The site will be available at `https://<username>.github.io/salary/`.
 
 ## License
 
