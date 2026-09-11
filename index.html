@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary Calculator</title>
+    <style>
+        :root {
+            --color-background: #fcfcf9;
+            --color-surface: #fffffd;
+            --color-text: #134252;
+            --color-text-secondary: #626c71;
+            --color-primary: #21808d;
+            --color-primary-hover: #1d7480;
+            --color-border: rgba(94, 82, 64, 0.2);
+            --color-success: #21808d;
+            --radius-base: 8px;
+            --radius-lg: 12px;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-background: #1f2121;
+                --color-surface: #262828;
+                --color-text: #f5f5f5;
+                --color-text-secondary: rgba(167, 169, 169, 0.7);
+                --color-primary: #32b8c6;
+                --color-primary-hover: #2da6b2;
+                --color-border: rgba(119, 124, 124, 0.3);
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--color-background);
+            color: var(--color-text);
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--color-text);
+        }
+
+        .subtitle {
+            color: var(--color-text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--color-text);
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--color-text);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            background: var(--color-surface);
+            color: var(--color-text);
+            font-size: 1rem;
+        }
+
+        input:focus, select:focus {
+            outline: 2px solid var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .result-item {
+            padding: 0.75rem;
+            background: var(--color-background);
+            border-radius: var(--radius-base);
+        }
+
+        .result-label {
+            font-size: 0.75rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .result-value {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--color-primary);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-base);
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .btn-secondary {
+            background: var(--color-background);
+            color: var(--color-text);
+            border: 1px solid var(--color-border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-surface);
+        }
+
+        .saved-results {
+            margin-top: 2rem;
+        }
+
+        .saved-item {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .saved-info {
+            flex: 1;
+        }
+
+        .saved-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .saved-details {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+        }
+
+        .btn-delete {
+            background: transparent;
+            color: var(--color-text-secondary);
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .btn-delete:hover {
+            color: #c01521;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Salary Calculator</h1>
+        <p class="subtitle">Convert salaries between currencies and time periods</p>
+
+        <div class="grid">
+            <div class="card">
+                <h2>Input</h2>
+                <div class="input-group">
+                    <label for="amount">Amount</label>
+                    <input type="number" id="amount" placeholder="Enter amount" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label for="currency">Currency</label>
+                    <select id="currency">
+                        <option value="GBP">GBP (£)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="USD" selected>USD ($)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="period">Time Period</label>
+                    <select id="period">
+                        <option value="hour">Per Hour</option>
+                        <option value="day">Per Day</option>
+                        <option value="month">Per Month</option>
+                        <option value="year" selected>Per Year</option>
+                    </select>
+                </div>
+                <div class="actions">
+                    <button class="btn" onclick="calculate()">Calculate</button>
+                    <button class="btn btn-secondary" onclick="saveResult()">Save Result</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Results</h2>
+                <div class="result-grid" id="results">
+                    <div class="result-item">
+                        <div class="result-label">Per Hour</div>
+                        <div class="result-value" id="hourly">-</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Per Day (8h)</div>
+                        <div class="result-value" id="daily">-</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Per Month</div>
+                        <div class="result-value" id="monthly">-</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Per Year</div>
+                        <div class="result-value" id="yearly">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Currency Conversions</h2>
+                <div class="result-grid" id="conversions">
+                    <div class="result-item">
+                        <div class="result-label">GBP</div>
+                        <div class="result-value" id="conv-gbp">-</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">EUR</div>
+                        <div class="result-value" id="conv-eur">-</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">USD</div>
+                        <div class="result-value" id="conv-usd">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="saved-results">
+            <h2>Saved Results</h2>
+            <div id="savedList"></div>
+        </div>
+    </div>
+
+    <script>
+        const exchangeRates = {
+            GBP: { EUR: 1.1506, USD: 1.3329, GBP: 1 },
+            EUR: { GBP: 0.8691, USD: 1.1584, EUR: 1 },
+            USD: { GBP: 0.7503, EUR: 0.8632, USD: 1 }
+        };
+
+        const hoursPerYear = 2080;
+        const hoursPerMonth = 173.33;
+        const hoursPerDay = 8;
+
+        let savedResults = [];
+
+        function calculate() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            const currency = document.getElementById('currency').value;
+            const period = document.getElementById('period').value;
+
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+
+            let hourlyRate;
+            if (period === 'hour') {
+                hourlyRate = amount;
+            } else if (period === 'day') {
+                hourlyRate = amount / hoursPerDay;
+            } else if (period === 'month') {
+                hourlyRate = amount / hoursPerMonth;
+            } else {
+                hourlyRate = amount / hoursPerYear;
+            }
+
+            const dailyRate = hourlyRate * hoursPerDay;
+            const monthlyRate = hourlyRate * hoursPerMonth;
+            const yearlyRate = hourlyRate * hoursPerYear;
+
+            const symbols = { GBP: '£', EUR: '€', USD: '$' };
+            const symbol = symbols[currency];
+
+            document.getElementById('hourly').textContent = `${symbol}${hourlyRate.toFixed(2)}`;
+            document.getElementById('daily').textContent = `${symbol}${dailyRate.toFixed(2)}`;
+            document.getElementById('monthly').textContent = `${symbol}${monthlyRate.toFixed(2)}`;
+            document.getElementById('yearly').textContent = `${symbol}${yearlyRate.toFixed(2)}`;
+
+            const yearlyInSourceCurrency = yearlyRate;
+            const gbpYearly = yearlyInSourceCurrency * exchangeRates[currency].GBP;
+            const eurYearly = yearlyInSourceCurrency * exchangeRates[currency].EUR;
+            const usdYearly = yearlyInSourceCurrency * exchangeRates[currency].USD;
+
+            document.getElementById('conv-gbp').textContent = `£${gbpYearly.toFixed(2)} /year`;
+            document.getElementById('conv-eur').textContent = `€${eurYearly.toFixed(2)} /year`;
+            document.getElementById('conv-usd').textContent = `$${usdYearly.toFixed(2)} /year`;
+        }
+
+        function saveResult() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            const currency = document.getElementById('currency').value;
+            const period = document.getElementById('period').value;
+
+            if (!amount || amount <= 0) {
+                alert('Please calculate a result first');
+                return;
+            }
+
+            const hourlyText = document.getElementById('hourly').textContent;
+            const yearlyText = document.getElementById('yearly').textContent;
+
+            savedResults.push({
+                id: Date.now(),
+                amount,
+                currency,
+                period,
+                hourlyText,
+                yearlyText,
+                timestamp: new Date().toLocaleString()
+            });
+
+            renderSaved();
+        }
+
+        function deleteResult(id) {
+            savedResults = savedResults.filter(r => r.id !== id);
+            renderSaved();
+        }
+
+        function renderSaved() {
+            const container = document.getElementById('savedList');
+            
+            if (savedResults.length === 0) {
+                container.innerHTML = '<p style="color: var(--color-text-secondary);">No saved results yet</p>';
+                return;
+            }
+
+            container.innerHTML = savedResults.map(result => `
+                <div class="saved-item">
+                    <div class="saved-info">
+                        <div class="saved-title">${result.yearlyText} (${result.hourlyText}/hour)</div>
+                        <div class="saved-details">Input: ${result.amount} ${result.currency} per ${result.period} • ${result.timestamp}</div>
+                    </div>
+                    <button class="btn-delete" onclick="deleteResult(${result.id})">✕</button>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('amount').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') calculate();
+        });
+
+        renderSaved();
+    </script>
+</body>
+</html>
+
