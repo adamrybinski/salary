@@ -290,6 +290,10 @@
                         <div class="result-label">USD</div>
                         <div class="result-value" id="conv-usd">-</div>
                     </div>
+                    <div class="result-item">
+                        <div class="result-label">AED</div>
+                        <div class="result-value" id="conv-aed">-</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -351,10 +355,12 @@
             const gbpYearly = yearlyInSourceCurrency * exchangeRates[currency].GBP;
             const eurYearly = yearlyInSourceCurrency * exchangeRates[currency].EUR;
             const usdYearly = yearlyInSourceCurrency * exchangeRates[currency].USD;
+            const aedYearly = yearlyInSourceCurrency * exchangeRates[currency].AED;
 
             document.getElementById('conv-gbp').textContent = `£${gbpYearly.toFixed(2)} /year`;
             document.getElementById('conv-eur').textContent = `€${eurYearly.toFixed(2)} /year`;
             document.getElementById('conv-usd').textContent = `$${usdYearly.toFixed(2)} /year`;
+            document.getElementById('conv-aed').textContent = `د.إ${aedYearly.toFixed(2)} /year`;
         }
 
         function saveResult() {
