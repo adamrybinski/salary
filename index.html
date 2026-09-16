@@ -351,16 +351,20 @@
             document.getElementById('monthly').textContent = `${symbol}${monthlyRate.toFixed(2)}`;
             document.getElementById('yearly').textContent = `${symbol}${yearlyRate.toFixed(2)}`;
 
-            const yearlyInSourceCurrency = yearlyRate;
-            const gbpYearly = yearlyInSourceCurrency * exchangeRates[currency].GBP;
-            const eurYearly = yearlyInSourceCurrency * exchangeRates[currency].EUR;
-            const usdYearly = yearlyInSourceCurrency * exchangeRates[currency].USD;
-            const aedYearly = yearlyInSourceCurrency * exchangeRates[currency].AED;
+            const periodAmounts = { hour: hourlyRate, day: dailyRate, month: monthlyRate, year: yearlyRate };
+            const periodLabels = { hour: 'hour', day: 'day', month: 'month', year: 'year' };
+            const amountInPeriod = periodAmounts[period];
+            const periodLabel = periodLabels[period];
 
-            document.getElementById('conv-gbp').textContent = `£${gbpYearly.toFixed(2)} /year`;
-            document.getElementById('conv-eur').textContent = `€${eurYearly.toFixed(2)} /year`;
-            document.getElementById('conv-usd').textContent = `$${usdYearly.toFixed(2)} /year`;
-            document.getElementById('conv-aed').textContent = `د.إ${aedYearly.toFixed(2)} /year`;
+            const gbpConverted = amountInPeriod * exchangeRates[currency].GBP;
+            const eurConverted = amountInPeriod * exchangeRates[currency].EUR;
+            const usdConverted = amountInPeriod * exchangeRates[currency].USD;
+            const aedConverted = amountInPeriod * exchangeRates[currency].AED;
+
+            document.getElementById('conv-gbp').textContent = `£${gbpConverted.toFixed(2)} /${periodLabel}`;
+            document.getElementById('conv-eur').textContent = `€${eurConverted.toFixed(2)} /${periodLabel}`;
+            document.getElementById('conv-usd').textContent = `$${usdConverted.toFixed(2)} /${periodLabel}`;
+            document.getElementById('conv-aed').textContent = `د.إ${aedConverted.toFixed(2)} /${periodLabel}`;
         }
 
         function saveResult() {
