@@ -235,6 +235,7 @@
                         <option value="GBP">GBP (£)</option>
                         <option value="EUR">EUR (€)</option>
                         <option value="USD" selected>USD ($)</option>
+                        <option value="AED">AED (د.إ)</option>
                     </select>
                 </div>
                 <div class="input-group">
@@ -301,9 +302,10 @@
 
     <script>
         const exchangeRates = {
-            GBP: { EUR: 1.1506, USD: 1.3329, GBP: 1 },
-            EUR: { GBP: 0.8691, USD: 1.1584, EUR: 1 },
-            USD: { GBP: 0.7503, EUR: 0.8632, USD: 1 }
+            GBP: { EUR: 1.1506, USD: 1.3329, AED: 4.7942, GBP: 1 },
+            EUR: { GBP: 0.8691, USD: 1.1584, AED: 4.1667, EUR: 1 },
+            USD: { GBP: 0.7503, EUR: 0.8632, AED: 3.5967, USD: 1 },
+            AED: { GBP: 0.2086, EUR: 0.24, USD: 0.2780, AED: 1 }
         };
 
         const hoursPerYear = 2080;
@@ -337,7 +339,7 @@
             const monthlyRate = hourlyRate * hoursPerMonth;
             const yearlyRate = hourlyRate * hoursPerYear;
 
-            const symbols = { GBP: '£', EUR: '€', USD: '$' };
+            const symbols = { GBP: '£', EUR: '€', USD: '$', AED: 'د.إ' };
             const symbol = symbols[currency];
 
             document.getElementById('hourly').textContent = `${symbol}${hourlyRate.toFixed(2)}`;
